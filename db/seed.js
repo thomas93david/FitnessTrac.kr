@@ -6,10 +6,10 @@ async function dropTables() {
     console.log("Starting to drop tables...");
 
     await client.query(`
-        DROP TABLE IF EXISTS users;
-        DROP TABLE IF EXISTS activities;
-        DROP TABLE IF EXISTS routines;
-        DROP TABLE IF EXISTS routine_activities;
+    DROP TABLE IF EXISTS routine_activities;
+    DROP TABLE IF EXISTS routines;
+    DROP TABLE IF EXISTS activities;
+    DROP TABLE IF EXISTS users; 
       `);
 
     console.log("Finished dropping tables!");
@@ -71,17 +71,43 @@ async function createInitialUsers() {
   try {
     console.log("Starting to create users...");
 
-    const prince = await createUser({
+    await createUser({
       username: "princeHendrix",
       password: "guitarslayers100",
     });
 
-    console.log(prince);
+    await createUser({
+      username: "drinkWater24",
+      password: "drinkwaterallday",
+    });
+
+    await createUser({
+      username: "spiderBro929",
+      password: "doeswhateveraspidercan",
+    });
+
+    await createUser({
+      username: "Captain_Planet",
+      password: "pollutiodowntwo0",
+    });
+
+    await createUser({
+      username: "spACEghOST",
+      password: "coast2coast",
+    });
 
     console.log("Finished creating users!");
   } catch (error) {
     console.error("Error creating users!");
     throw error;
+  }
+}
+
+async function createInitialActivities() {
+  try {
+    console.log("Finished creating activities!");
+  } catch (error) {
+    console.log("Error creating actvities");
   }
 }
 
@@ -101,8 +127,8 @@ async function testDB() {
   try {
     console.log("Starting to test database...");
 
-    const users = await getAllUsers();
-    console.log("getAllUsers:", users);
+    const users = await getUser();
+    console.log("getUser:", users);
 
     console.log("Finished database tests!");
   } catch (error) {
