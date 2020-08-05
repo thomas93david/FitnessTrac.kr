@@ -6,15 +6,20 @@ const { client } = require("./client");
 // make sure to hash the password before storing it to the database
 
 async function createUser({ username, password }) {
+  console.log("I work up to this point");
   try {
     const {
-      rows: [user],
-    } = await client.query(`
+      rows: [users],
+    } = await client.query(
+      `
         INSERT INTO users(username, password)
         VALUES($1, $2)
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
-        `)[(username, password)];
+        `
+    )[(username, password)];
+    console.log("Find me yet?");
+    return users;
   } catch (error) {
     throw error;
   }

@@ -1,5 +1,5 @@
 const { client } = require("./client");
-const { getUser, createUser } = require("./users");
+const { createUser, getUser } = require("./users");
 
 async function dropTables() {
   try {
@@ -7,7 +7,9 @@ async function dropTables() {
 
     await client.query(`
         DROP TABLE IF EXISTS users;
-        
+        DROP TABLE IF EXISTS activities;
+        DROP TABLE IF EXISTS routines;
+        DROP TABLE IF EXISTS routine_activities;
       `);
 
     console.log("Finished dropping tables!");
