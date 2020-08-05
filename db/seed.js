@@ -31,6 +31,35 @@ async function createTables() {
         );
       `);
 
+    await client.query(`
+      CREATE TABLE activities (
+        id SERIAL PRIMARY KEY,
+        name varchar(255) UNIQUE NOT NULL,
+        description TEXT NOT NULL
+      );
+    `);
+
+    await client.query(`
+    CREATE TABLE routines (
+      id SERIAL PRIMARY KEY,
+      "creatorId" INTEGER REFERENCES users(id),
+      public BOOLEAN DEFAULT false,
+      name varchar(255) UNIQUE NOT NULL,
+      goal TEXT NOT NULL
+    );
+  `);
+
+    await client.query(`
+  CREATE TABLE routine_activities (
+    id SERIAL PRIMARY KEY,
+    "routineId" INTEGER REFERENCES routines(id),
+    "activityId" INTEGER REFERENCES activities(id),
+    duration INTEGER,
+    count INTEGER
+
+  );
+`);
+
     console.log("Finished building tables!");
   } catch (error) {
     console.error("Error building tables!");
