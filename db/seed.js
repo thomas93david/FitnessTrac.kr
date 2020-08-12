@@ -1,10 +1,11 @@
 const { client } = require("./client");
-const { createUser, getUser, updateUser } = require("./users");
+const { createUser, getUser, updateUser, getAllUsers } = require("./users");
 const {
   getAllActivities,
   createActivity,
   updateActivities,
 } = require("./activities");
+const { createRoutine, getAllRoutines } = require("./routines");
 
 async function dropTables() {
   try {
@@ -142,6 +143,42 @@ async function createInitialActivities() {
   }
 }
 
+async function createInitalRoutines() {
+  try {
+    console.log("Starting to create routines");
+
+    const [princeHendrix, drinkWater24, spACEghOST] = await getAllUsers();
+
+    console.log("Testing:", princeHendrix.id);
+
+    await createRoutine({
+      creatorId: princeHendrix.id,
+      public: "false",
+      name: "hi",
+      goal: "lose weight",
+    });
+
+    await createRoutine({
+      creatorId: drinkWater24.id,
+      public: "true",
+      name: "bye",
+      goal: "gain weight",
+    });
+
+    await createRoutine({
+      creatorId: spACEghOST.id,
+      public: "true",
+      name: "Flying",
+      goal: "FLY AWAY",
+    });
+
+    console.log("Finished creating routines");
+  } catch (error) {
+    console.log(error);
+    console.log("Error creating routines");
+  }
+}
+
 async function rebuildDB() {
   try {
     client.connect();
@@ -150,6 +187,7 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialActivities();
+    await createInitalRoutines();
   } catch (error) {
     throw error;
   }
@@ -157,7 +195,7 @@ async function rebuildDB() {
 
 async function testDB() {
   try {
-    console.log("Starting to test database...");
+    console.log("Testing database...");
 
     const users = await getUser();
     console.log("getUser:", users);
@@ -165,25 +203,28 @@ async function testDB() {
     const exercises = await getAllActivities();
     console.log("getAllActivities:", exercises);
 
-    console.log("Calling updateUser on users[0]");
-    const updateUserResult = await updateUser(users[0].id, {
-      username: "MakingProgress",
-    });
-    console.log("Result", updateUserResult);
+    const routines = await getAllRoutines();
+    console.log("getAllRoutines", routines);
 
-    console.log("Calling updateActivities on users[0]");
-    console.log(activities[0].name);
-    console.log(activities[0].description);
+    // console.log("Calling updateUser on users[0]");
+    // const updateUserResult = await updateUser(users[0].id, {
+    //   username: "MakingProgress",
+    // });
+    // console.log("Result", updateUserResult);
 
-    const updateActivitiesResult = await updateActivities(
-      exercises[0].name,
-      exercises[0].description,
-      {
-        name: "sleep",
-        description: "preserve energy for tomorrow",
-      }
-    );
-    console.log("Result", updateActivitiesResult);
+    // console.log("Calling updateActivities on users[0]");
+    // console.log(activities[0].name);
+    // console.log(activities[0].description);
+
+    // const updateActivitiesResult = await updateActivities(
+    //   exercises[0].name,
+    //   exercises[0].description,
+    //   {
+    //     name: "sleep",
+    //     description: "preserve energy for tomorrow",
+    //   }
+    // );
+    // console.log("Result", updateActivitiesResult);
 
     console.log("Finished database tests!");
   } catch (error) {

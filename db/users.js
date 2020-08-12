@@ -27,13 +27,31 @@ async function createUser({ username, password }) {
 // getUser({ username, password })
 // this should be able to verify the password against the hashed password
 async function getUser() {
-  const { rows } = await client.query(
-    ` SELECT id, username, password
+  try {
+    const { rows } = await client.query(
+      ` SELECT id, username, password
             FROM users;
         `
-  );
+    );
 
-  return rows;
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getAllUsers() {
+  try {
+    const { rows } = await client.query(
+      ` SELECT id, username
+            FROM users;
+        `
+    );
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function updateUser(id, fields = {}) {
@@ -66,4 +84,4 @@ async function updateUser(id, fields = {}) {
   }
 }
 
-module.exports = { client, getUser, createUser, updateUser };
+module.exports = { client, getUser, createUser, updateUser, getAllUsers };
