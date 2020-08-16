@@ -40,6 +40,25 @@ async function getUser() {
   }
 }
 
+async function getUserByUsername(username) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT *
+      FROM users
+      WHERE username=$1
+    `,
+      [username]
+    );
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getAllUsers() {
   try {
     const { rows } = await client.query(
@@ -84,4 +103,11 @@ async function updateUser(id, fields = {}) {
   }
 }
 
-module.exports = { client, getUser, createUser, updateUser, getAllUsers };
+module.exports = {
+  client,
+  getUser,
+  createUser,
+  updateUser,
+  getAllUsers,
+  getUserByUsername,
+};

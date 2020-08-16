@@ -1,16 +1,17 @@
 const PORT = 3000;
 const express = require("express");
 
+require("dotenv").config();
+
 const server = express();
-
-const apiRouter = require("./api");
-server.use("/api", apiRouter);
-
 const bodyParser = require("body-parser");
 server.use(bodyParser.json());
 
 const morgan = require("morgan");
 server.use(morgan("dev"));
+
+const apiRouter = require("./api");
+server.use("/api", apiRouter);
 
 server.use((req, res, next) => {
   console.log("<-----Body Logger START----->");

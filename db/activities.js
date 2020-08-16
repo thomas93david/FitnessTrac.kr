@@ -42,7 +42,7 @@ async function createActivity({ name, description }) {
 // do update the name and description
 // return the updated activity
 
-async function updateActivities(id, name, description, fields = {}) {
+async function updateActivity(id, name, description, fields = {}) {
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
@@ -75,5 +75,5 @@ module.exports = {
   client,
   getAllActivities,
   createActivity,
-  updateActivities,
+  updateActivity,
 };

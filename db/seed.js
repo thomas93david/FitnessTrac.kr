@@ -1,10 +1,17 @@
 const { client } = require("./client");
-const { createUser, getUser, updateUser, getAllUsers } = require("./users");
+const {
+  createUser,
+  getUser,
+  updateUser,
+  getAllUsers,
+  getUserByUsername,
+} = require("./users");
 const {
   getAllActivities,
   createActivity,
-  updateActivities,
+  updateActivity,
 } = require("./activities");
+
 const { createRoutine, getAllRoutines } = require("./routines");
 
 async function dropTables() {
@@ -35,39 +42,27 @@ async function createTables() {
           username varchar(255) UNIQUE NOT NULL,
           password varchar(255) NOT NULL
         );
+        CREATE TABLE activities (
+          id SERIAL PRIMARY KEY,
+          name varchar(255) UNIQUE NOT NULL,
+          description TEXT NOT NULL
+        );
+        CREATE TABLE routines (
+          id SERIAL PRIMARY KEY,
+          "creatorId" INTEGER REFERENCES users(id),
+          public BOOLEAN DEFAULT false,
+          name varchar(255) UNIQUE NOT NULL,
+          goal TEXT NOT NULL
+        );
+        CREATE TABLE routine_activities (
+          id SERIAL PRIMARY KEY,
+          "routineId" INTEGER REFERENCES routines(id),
+          "activityId" INTEGER REFERENCES activities(id),
+          duration INTEGER,
+          count INTEGER,
+          UNIQUE ("routineId", "activityId")
+        );
       `);
-    console.log("TABLE users CREATED");
-    await client.query(`
-      CREATE TABLE activities (
-        id SERIAL PRIMARY KEY,
-        name varchar(255) UNIQUE NOT NULL,
-        description TEXT NOT NULL
-      );
-    `);
-    console.log("TABLE activities CREATED");
-
-    await client.query(`
-    CREATE TABLE routines (
-      id SERIAL PRIMARY KEY,
-      "creatorId" INTEGER REFERENCES users(id),
-      public BOOLEAN DEFAULT false,
-      name varchar(255) UNIQUE NOT NULL,
-      goal TEXT NOT NULL
-    );
-  `);
-    console.log("TABLE routines CREATED");
-
-    await client.query(`
-  CREATE TABLE routine_activities (
-    id SERIAL PRIMARY KEY,
-    "routineId" INTEGER REFERENCES routines(id),
-    "activityId" INTEGER REFERENCES activities(id),
-    duration INTEGER,
-    count INTEGER
-
-  );
-`);
-    console.log("TABLE routine_activities CREATED");
 
     console.log("Finished building tables!");
   } catch (error) {
@@ -81,6 +76,7 @@ async function createInitialUsers() {
     console.log("Starting to create users...");
 
     await createUser({
+      id: "1",
       username: "princeHendrix",
       password: "guitarslayers100",
     });
@@ -206,25 +202,25 @@ async function testDB() {
     const routines = await getAllRoutines();
     console.log("getAllRoutines", routines);
 
-    // console.log("Calling updateUser on users[0]");
-    // const updateUserResult = await updateUser(users[0].id, {
-    //   username: "MakingProgress",
-    // });
-    // console.log("Result", updateUserResult);
+    console.log("Calling updateUser on users[0]");
+    const updateUserResult = await updateUser(users[0].id, {
+      username: "MakingProgress",
+    });
+    console.log("Result", updateUserResult);
 
-    // console.log("Calling updateActivities on users[0]");
-    // console.log(activities[0].name);
-    // console.log(activities[0].description);
+    console.log("Calling updateActivities on users[0]");
+    console.log(activities[0].name);
+    console.log(activities[0].description);
 
-    // const updateActivitiesResult = await updateActivities(
-    //   exercises[0].name,
-    //   exercises[0].description,
-    //   {
-    //     name: "sleep",
-    //     description: "preserve energy for tomorrow",
-    //   }
-    // );
-    // console.log("Result", updateActivitiesResult);
+    const updateActivitiesResult = await updateActivities(
+      exercises[0].name,
+      exercises[0].description,
+      {
+        name: "sleep",
+        description: "preserve energy for tomorrow",
+      }
+    );
+    console.log("Result", updateActivitiesResult);
 
     console.log("Finished database tests!");
   } catch (error) {

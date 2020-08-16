@@ -76,7 +76,7 @@ async function getPublicRoutinesByUser({ username }) {
   try {
     const { routines } = await client.query(
       `
-      SELECT name, goal 
+      SELECT name
       FROM routines
       WHERE id = ${username} && public = true
       JOIN routine_activites.id ON routines.public
@@ -107,24 +107,31 @@ async function getPublicRoutinesByActivity({ activityId }) {
   }
 }
 
-// updateRoutine
-// updateRoutine({ id, public, name, goal })
-// Find the routine with id equal to the passed in id
-// Don't update the routine id, but do update the public status, name, or goal, as necessary
-// Return the updated routine
-async function updateRoutine({ id, public, name, goal }) {
-  try {
-  } catch (error) {
-    throw error;
-  }
-}
+async function updateRoutine({ id, fields }) {
+  // Find the routine with id equal to the passed in id
+  // Don't update the routine id, but do update the public status, name, or goal, as necessary
+  // Return the updated routine:
 
-// destroyRoutine
-// destroyRoutine(id)
-// remove routine from database
-// Make sure to delete all the routine_activities whose routine is the one being deleted.
-async function destroyRoutine(id) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+
+  if (setString.length === 0) {
+    return;
+  }
+
   try {
+    const { rows: routine_activities } = await client.query(
+      `
+              UPDATE routine_activities
+              SET ${setString}
+              WHERE id=${id}
+              RETURNING *;
+          `,
+      Object.values(fields)
+    );
+
+    return routine_activities;
   } catch (error) {
     throw error;
   }
@@ -138,4 +145,5 @@ module.exports = {
   getAllRoutinesByUser,
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
+  updateRoutine,
 };

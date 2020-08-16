@@ -1,9 +1,5 @@
 const { client } = require("./client");
 
-// addActivityToRoutine
-// addActivityToRoutine({ routineId, activityId, count, duration })
-// create a new routine_activity, and return it
-
 async function addActivityToRoutine({
   routineId,
   activityId,
@@ -11,37 +7,66 @@ async function addActivityToRoutine({
   duration,
 }) {
   try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      INSERT INTO routine_activities("routineId", "activityId", count, duration)
+      VALUES($1, $2, $3, $4)
+      RETURNING *;
+    `,
+      [routineId, activityId, count, duration]
+    );
+
+    return user;
   } catch (error) {
     throw error;
   }
 }
 
-// updateRoutineActivity
-// updateRoutineActivity({ id, count, duration })
-// Find the routine with id equal to the passed in id
-// Update the count or duration as necessary
+async function updateRoutineActivity({ id, count, duration }) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
 
-async function updateRoutineActivity() {
+  if (setString.length === 0) {
+    return;
+  }
+
   try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      UPDATE users
+      SET ${setString}
+      WHERE id=${id}
+      RETURNING *;
+    `,
+      Object.values(fields)
+    );
+
+    return user;
   } catch (error) {
     throw error;
   }
 }
 
-// destroyRoutineActivity
-// destroyRoutineActivity(id)
-// remove routine_activity from database
-
-async function destroyRoutineActivity() {
+async function destroyRoutineActivity(id) {
   try {
+    const id = await client.query(
+      `
+            DELETE FROM routine_activities
+            WHERE id = ${id}
+            `
+    );
   } catch (error) {
     throw error;
   }
 }
 
-module.export = {
-  client,
-  addActivityToRoutine,
-  updateRoutineActivity,
+module.exports = {
   destroyRoutineActivity,
+  updateRoutineActivity,
+  addActivityToRoutine,
 };
