@@ -1,11 +1,12 @@
-const { client } = require("./client");
+const { client } = require("../db/client");
 const {
   createUser,
   getUser,
   updateUser,
   getAllUsers,
   getUserByUsername,
-} = require("./users");
+} = require("../db/users");
+
 const {
   getAllActivities,
   createActivity,
@@ -207,20 +208,6 @@ async function testDB() {
       username: "MakingProgress",
     });
     console.log("Result", updateUserResult);
-
-    console.log("Calling updateActivities on users[0]");
-    console.log(activities[0].name);
-    console.log(activities[0].description);
-
-    const updateActivitiesResult = await updateActivities(
-      exercises[0].name,
-      exercises[0].description,
-      {
-        name: "sleep",
-        description: "preserve energy for tomorrow",
-      }
-    );
-    console.log("Result", updateActivitiesResult);
 
     console.log("Finished database tests!");
   } catch (error) {

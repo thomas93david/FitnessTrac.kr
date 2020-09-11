@@ -1,8 +1,5 @@
 const { client } = require("./client");
 
-//  createUser
-//  createUser({ username, password })
-//  make sure to hash the password before storing it to the database
 async function createUser({ username, password }) {
   try {
     const {
@@ -23,9 +20,6 @@ async function createUser({ username, password }) {
   }
 }
 
-// getUser
-// getUser({ username, password })
-// this should be able to verify the password against the hashed password
 async function getUser() {
   try {
     const { rows } = await client.query(

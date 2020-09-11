@@ -1,12 +1,11 @@
 /***** APIROUTER *****/
 // JWT middleware:
-const jwt = require("jsonwebtoken");
-const { getUserById } = require("../db");
-const { JWT_SECRET } = process.env;
 const express = require("express");
 const apiRouter = express.Router();
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = process.env;
+const { getUserById } = require("../db/users");
 
-// set `req.user` if possible
 apiRouter.use(async (req, res, next) => {
   const prefix = "Bearer ";
   const auth = req.header("Authorization");

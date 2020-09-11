@@ -1,8 +1,5 @@
 const { client } = require("./client");
 
-// createRoutine
-// createRoutine({ creatorId, public, name, goal })
-// create and return the new routine
 async function createRoutine({ creatorId, public, name, goal }) {
   try {
     const { rows } = await client.query(
@@ -30,6 +27,30 @@ async function getAllRoutines() {
       `
     );
     return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getRoutineById({ routineId }) {
+  try {
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM routines
+      WHERE id=$1;
+      `,
+      [routineId]
+    );
+    if (!routine) {
+      throw {
+        name: "RoutineNotFound",
+        message: "No routine with that routineId",
+      };
+    }
+    return routine;
   } catch (error) {
     throw error;
   }
@@ -138,7 +159,6 @@ async function updateRoutine({ id, fields }) {
 }
 
 module.exports = {
-  client,
   createRoutine,
   getAllRoutines,
   getPublicRoutines,
@@ -146,4 +166,5 @@ module.exports = {
   getPublicRoutinesByUser,
   getPublicRoutinesByActivity,
   updateRoutine,
+  getRoutineById,
 };

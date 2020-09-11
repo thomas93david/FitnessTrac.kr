@@ -1,16 +1,10 @@
 const activitiesRouter = require("express").Router();
 const { requireUser } = require("./utils");
 
-const {
-  createActivity,
-  getAllActivities,
-  updateActivities,
-} = require("../db/activities");
+const { createActivity, getAllActivities } = require("../db/activities");
 
 activitiesRouter.use((req, res, next) => {
   console.log("A request is being made to /activities");
-
-  res.send({ message: "hello from /activities!" });
   next();
 });
 
@@ -109,7 +103,7 @@ activitiesRouter.get("/activityId/routines", async (req, res) => {
     res.send({
       activities,
     });
-  } catch ({ name, messgae }) {
+  } catch ({ name, message }) {
     next({ name, message });
   }
 });

@@ -1,5 +1,13 @@
-const { requireUser } = require("./utils");
 const routinesRouter = require("express").Router();
+const { requireUser } = require("./utils");
+
+const {
+  getAllRoutines,
+  createRoutine,
+  getRoutineById,
+  updateRoutine,
+  updatePost,
+} = require("../db/routines");
 
 // GET /routines
 // Return a list of public routines, include the activities with them

@@ -1,6 +1,6 @@
-const { PORT = 3000 } = process.env;
+// const { PORT = 3000 } = process.env;
+const PORT = 3000;
 const express = require("express");
-
 require("dotenv").config();
 
 const server = express();
@@ -20,6 +20,9 @@ server.use((req, res, next) => {
 
   next();
 });
+
+const { client } = require("./db/client");
+client.connect();
 
 server.listen(PORT, () => {
   console.log("The server is up on port", PORT);
